@@ -1,0 +1,9 @@
+[submodule "ground-telemetry-station-driver"]
+	path = ground-telemetry-station-driver
+	url = git@github.com:miguelgargs/ground-telemetry-station-driver.git
+[submodule "ground-telemetry-station-backend"]
+	path = ground-telemetry-station-backend
+	url = git@github.com:miguelgargs/ground-telemetry-station-backend.git
+[submodule "ground-telemetry-station-frontend"]
+	path = ground-telemetry-station-frontend
+	url = git@github.com:miguelgargs/ground-telemetry-station-frontend.git
