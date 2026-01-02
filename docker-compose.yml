@@ -1,0 +1,46 @@
+services:
+  simulator:
+    image: radarku/ardupilot-sitl
+    command: ["--no-mavproxy"]
+    ports:
+      - "5760:5760"
+    environment:
+      - VEHICLE=ArduCopter
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/5760' || exit 1"]
+      interval: 2s
+      timeout: 1s
+      retries: 15
+      start_period: 10s
+
+  driver:
+    build: ./ground-telemetry-station-driver
+    ports:
+      - "50051:50051"
+    depends_on:
+      simulator:
+        condition: service_healthy
+
+  backend:
+    build: ./ground-telemetry-station-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - GRPC_URI=driver
+    depends_on:
+      driver:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/8000' || exit 1"]
+      interval: 2s
+      timeout: 1s
+      retries: 15
+      start_period: 10s
+
+  frontend:
+    build: ./ground-telemetry-station-frontend
+    ports:
+      - "8085:80"
+    depends_on:
+      backend:
+        condition: service_healthy
